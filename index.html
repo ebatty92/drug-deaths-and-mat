@@ -98,13 +98,13 @@
     <p>County:
       <span></span>
     </p>
-    <p class='mat'>mat
+    <p class='mat'>Facilities offering some MAT
       <span></span>:
       <span class='txt-1 txt-bold'></span>
     </p>
     <hr class='txt-hr'>
-    <p class='my6'>trend: 2004 &ndash; 2016</p>
-    <p class='my6'><span class='matspark'></span></p>
+    <p class='my6'>Estimated Death Rate Trend: 2004 &ndash; 2016</p>
+    <p class='my6'><span class='deathspark'></span></p>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -172,6 +172,10 @@
 
         resizeCircles(matLayer, 2004);
 
+        sequenceUI(matLayer);
+
+        addLabel(currentYear);
+
     } /// end drawMap()
 
     function calcRadius(val) {
@@ -204,8 +208,12 @@
                 layer.setRadius(radius);
             }
         });
+
+        // update hover window with current year
+        retrieveInfo(matLayer, currentYear);
+        addLabel(currentYear);
     }
-/*
+
     function sequenceUI(matLayer) {
         // sequenceUI function body
 
@@ -241,8 +249,8 @@
             });
 
     }
-*/
-/*    function drawLegend(data) {
+/*
+    function drawLegend(data) {
         // drawLegend body
 
         // create Leaflet control for the legend
@@ -331,7 +339,7 @@
   
     }
 */
-/*
+
     function retrieveInfo(matLayer, currentYear) {
         //function body
     
@@ -341,32 +349,40 @@
 
         // since the matLayer is on top, use to detect mouseover events
         matLayer.on('mouseover', function (e) {
-      
+            
+            // access properties = e.layer.feature.properties;
+            var props = e.layer.feature.properties;
+
+          if(+e.layer.feature.properties['smat_' + currentYear] == 0) {
+                // hide the tooltip
+                info.hide();
+                
+          // otherwise show the tooltip
+          } else {
+
             //remove the none class to display and show
             info.show();
 
-            // access properties = e.layer.feature.properties;
-            var props = e.layer.feature.properties;
 
             // populate HTML elements with relevant info
             $('#info span').html(props.county);
             $(".mat span:first-child").html('(year ' + currentYear + ')');
-            $(".mat span:last-child").html(Number(props['G' + currentYear]).toLocaleString());
+            $(".mat span:last-child").html(Number(props['smat_' + currentYear]).toLocaleString());
 
             // raise opacity level as visual affordance
             e.layer.setStyle({
             fillOpacity: .6
             });
 
-            // empty arrays for boys and girls values
-            var matValues = [];
+            // empty arrays for death values
+            var deathValues = [];
       
             // loop through the years and push values into those arrays
-            for (var i = 1; i <= 8; i++) {
-                matValues.push(props['B' + i]);
+            for (var i = 2004; i <= 2016; i++) {
+                deathValues.push(props['ave_death_' + i]);
             }
 
-            $('.matspark').sparkline(matValues, {
+            $('.deathspark').sparkline(deathValues, {
                 width: '200px',
                 height: '30px',
                 lineColor: '#D96D02',
@@ -374,7 +390,7 @@
                 spotRadius: 0,
                 lineWidth: 2
             });
-
+          }
         });
     
         // hide the info panel when mousing off layergroup and remove affordance opacity
@@ -411,8 +427,8 @@
             }
         });
     }
-*/
-/*
+
+
     function addLabel (currentYear) {
         // create Leaflet control for the legend
         var labelControl = L.control({
@@ -440,10 +456,9 @@
 
         // populate HTML elements with relevant info
         $(".year span").html(currentYear);
-
-    
+ 
     }
-*/ 
+
   </script>
 
 </body>
