@@ -170,27 +170,40 @@
             color: '#6E77B0',
         });
 
-        resizeCircles(matLayer, 1);
+        resizeCircles(matLayer, 2004);
 
     } /// end drawMap()
 
     function calcRadius(val) {
-        if (val === 0) {
-            var radius = 0  
-        } else {
+
         var radius = Math.sqrt(val / Math.PI);
-        return radius * .5; // adjust .5 as a scale factor
-        }
+        return radius * 20; // adjust .5 as a scale factor
   
     }
 
     function resizeCircles(matLayer, currentYear) {
         matLayer.eachLayer(function (layer) {
-            var radius = calcRadius(Number(layer.feature.properties['smat_' + currentYear]));
-            layer.setRadius(radius);  
-        });
-    
 
+            // shortcut to props
+            var props = layer.feature.properties;
+
+            // if the number is zero
+            if(+layer.feature.properties['smat_' + currentYear] == 0) {
+                // hide the layer
+                layer.setStyle({
+                    opacity: 0
+                })
+            // otherwise show the layer
+            } else {
+                layer.setStyle({
+                    opacity: 1
+                })
+                // and adjust the radius
+                var radius =
+                    calcRadius (+layer.feature.properties['smat_' + currentYear]);
+                layer.setRadius(radius);
+            }
+        });
     }
 /*
     function sequenceUI(matLayer) {
