@@ -126,19 +126,44 @@
         id: 'mapbox.light',
         accessToken: accessToken
     }).addTo(map);
+   
     // use omnivore to load the CSV data
     omnivore.csv('data/county_death_mat.csv')
         .on('ready', function (e) {
-        // access to the GeoJSON here!
-        drawMap(e.target.toGeoJSON());
+            $.getJSON("data/final_data.json", function(poly) {
+                drawMap(e.target.toGeoJSON(), poly); // draw the map using GeoJSON data
+            });
         })
         .on('error', function (e) {
-      console.log(e.error[0].message);
+        console.log(e.error[0].message);
     });
-    $.getJSON("data/final_data.json", function(poly) {
-        drawMap(poly); // draw the map using GeoJSON data
-    });
-    function drawMap(data, poly, currentYear){
+
+    function getColor(val) {
+        console.log(val)
+        if(val > 15) {
+            return 'green';
+        } else {
+            return 'yellow';
+        }
+    }
+    
+    function drawMap(data, poly){
+
+        var currentYear = 2004
+
+        var deathLayer = L.geoJSON(poly, {
+            style: function (feature) {
+                return {
+                    color: 'black',
+                    weight: 1,
+                    fillOpacity: 1,
+                    fillColor: getColor(+feature.properties['ave_death_' + currentYear])
+                };
+            }   
+        }).addTo(map);
+        
+
+
         // access to data here
         var options = {
             pointToLayer: function (feature, ll) {
@@ -150,28 +175,21 @@
             }
         }
         // create 1 separate layer from GeoJSON data
-        var matLayer = L.geoJson(data, options).addTo(map);
+        var matLayer = L.geoJSON(data, options).addTo(map);
+       
         matLayer.setStyle({
             color: '#6E77B0',
- 
         });
-        var deathLayer = L.geoJSON(data, {
-            style: function (poly) {
-                return {
-                    color: 'black',
-                    weight: 1,
-                    fillOpacity: 1,
-                    fillColor: '#1f78b4'
-                };
-            }   
-        }).addLayer(map);
-		map.fitBounds(matLayer.getBounds(), {
+
+
+        
+        map.fitBounds(matLayer.getBounds(), {
             zoom: 2
 		});
     
-        resizeCircles(matLayer, 2004);
-        sequenceUI(matLayer);
-        addLabel(currentYear);
+        // resizeCircles(matLayer, 2004);
+        // sequenceUI(matLayer);
+        // addLabel(2004);
     } /// end drawMap()
     function calcRadius(val) {
         var radius = Math.sqrt(val / Math.PI);
