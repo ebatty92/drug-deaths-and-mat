@@ -26,7 +26,7 @@
         margin-top: 8px; /* overwrite assembly.css rule */
     }
     .mat {
-        color: #6E77B0;
+        color: #59EA35;
     }
     #info {     
         z-index: 1000; 
@@ -89,7 +89,7 @@
   </div>
 
   <!-- ui info panel -->
-  <div id='info' class='py6 px12 bg-white border border--gray-light round absolute w240'> <!-- class of "none" prevents the info window from displaying until the user mouses over a feature -->
+  <div id='info' class='py6 px12 bg-gray-faint border border--gray-light round absolute w240'> <!-- class of "none" prevents the info window from displaying until the user mouses over a feature -->
     <p>County:
       <span></span>
     </p>
@@ -126,7 +126,7 @@
     }).addTo(map);
 
     // use omnivore to load the CSV data
-    omnivore.csv('data/county_death_mat.csv')
+    omnivore.csv('data/county_mat.csv')
         .on('ready', function (e) {
         // access to the GeoJSON here!
             $.getJSON("data/final_data.json", function(poly){
@@ -256,7 +256,8 @@
             var currentYear = this.value;
             // resize the circles with updated year
             resizeCircles(matLayer, currentYear);
-            updateMap(deathLayer, currentYear);
+            // recolor county polygons with updated year
+            updateMap(deathLayer, getColor, currentYear);
       
             });
     }
@@ -374,7 +375,7 @@
                 width: '200px',
                 height: '30px',
                 lineColor: '#D96D02',
-                fillColor: '#d98939',
+                fillColor: '#bd0026',
                 spotRadius: 0,
                 lineWidth: 2
             });
