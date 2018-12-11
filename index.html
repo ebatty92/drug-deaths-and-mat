@@ -14,11 +14,9 @@
     .mapbox-logo, .leaflet-control-attribution {
         display: none; 
     }
-
     .legend-large, .legend-small {
         border-radius: 50%; /* making the border-radius of a square div element 50% makes it appear as a circle */
     }
-
     hr.small, hr.large {
         width: 83px;
         position: absolute;
@@ -27,15 +25,12 @@
         border: 1px dashed #ccc; /* overwrite assembly.css rule */
         margin-top: 8px; /* overwrite assembly.css rule */
     }
-
     .mat {
-        color: #6E77B0;
+        color: #59EA35;
     }
-
     #info {     
         z-index: 1000; 
     }
-
     body {
         font-family: "Work Sans", sans-serif;
     }  
@@ -94,7 +89,7 @@
   </div>
 
   <!-- ui info panel -->
-  <div id='info' class='py6 px12 bg-white border border--gray-light round absolute w240'> <!-- class of "none" prevents the info window from displaying until the user mouses over a feature -->
+  <div id='info' class='py6 px12 bg-gray-faint border border--gray-light round absolute w240'> <!-- class of "none" prevents the info window from displaying until the user mouses over a feature -->
     <p>County:
       <span></span>
     </p>
@@ -114,83 +109,89 @@
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.3.5/chroma.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
-
 
   <script>
     var map = L.map('map', {
         zoomSnap: .1,
-        center: [-39, 95],
+        center: [-80, 30],
         zoom: 6,
         minZoom: 6,
         maxZoom: 9,
     });
-
-    var accessToken = 'pk.eyJ1IjoiZWJhdHR5OTIiLCJhIjoiY2pvNG9ncWczMDFhejN2cDVvemwyZzQ3MyJ9.dpFoYxYhhqKYeIXPvZSg6A'
-
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + accessToken, {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox.light',
-        accessToken: accessToken
+    var tiles = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_all/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
     }).addTo(map);
-
     // use omnivore to load the CSV data
-    omnivore.csv('data/county_death_mat.csv')
+    omnivore.csv('data/county_mat.csv')
         .on('ready', function (e) {
-            // access to the GeoJSON here!
-            drawMap(e.target.toGeoJSON());
-    })
+        // access to the GeoJSON here!
+            $.getJSON("data/final_data.json", function(poly){
+                drawMap(e.target.toGeoJSON(),poly); // draw the map using GeoJSON data
+            });
+        })
         .on('error', function (e) {
         console.log(e.error[0].message);
     });
-
-    function drawMap(data, currentYear){
+    function getColor(val) {
+        if (val <= 6.94) {
+            return '#ffe798';
+        } else if (val >= 6.95 &&  val < 10.95) {
+            return '#fecc5c';
+        } else if (val >= 10.95 && val < 16.95) {
+            return '#fd8d3c';
+        } else if (val >= 16.95 && val < 22.95) {
+            return '#f03b20';
+        } else if (val >= 22.95) {
+            return '#bd0026';
+        }
+    }
+    function drawMap(data, poly){
         // access to data here
+        var currentYear = 2004
+        var deathLayer = L.geoJSON(poly, {
+            style: function (feature) {
+                return {
+                    color: 'black',
+                    weight: 1,
+                    fillOpacity: 1,
+                    fillColor: getColor(+feature.properties['ave_death_' + currentYear])
+                };
+            }
+        }).addTo(map);
         var options = {
             pointToLayer: function (feature, ll) {
                 return L.circleMarker(ll, {
                     opacity: 1,
-                    weight: 2,
+                    weight: 3,
                     fillOpacity: 0,
                 })
             }
         }
-
         // create 1 separate layer from GeoJSON data
         var matLayer = L.geoJson(data, options).addTo(map);
-
-        // fit the bounds of the map to one of the layers
-        map.fitBounds(matLayer.getBounds());
-
-        //adjust zoom level of map
-        map.setZoom(map.getZoom() -.4);
-
         matLayer.setStyle({
-            color: '#6E77B0',
+            color: '#59EA35',
         });
-
+		map.fitBounds(matLayer.getBounds(), {
+            zoom: 2
+		});
+        
+        updateMap(deathLayer, getColor, 2004);
         resizeCircles(matLayer, 2004);
-
         sequenceUI(matLayer);
-
         addLabel(currentYear);
-
     } /// end drawMap()
-
     function calcRadius(val) {
-
         var radius = Math.sqrt(val / Math.PI);
         return radius * 20; // adjust .5 as a scale factor
   
     }
-
     function resizeCircles(matLayer, currentYear) {
         matLayer.eachLayer(function (layer) {
-
             // shortcut to props
             var props = layer.feature.properties;
-
             // if the number is zero
             if(+layer.feature.properties['smat_' + currentYear] == 0) {
                 // hide the layer
@@ -208,73 +209,61 @@
                 layer.setRadius(radius);
             }
         });
-
         // update hover window with current year
         retrieveInfo(matLayer, currentYear);
         addLabel(currentYear);
     }
-
-    function sequenceUI(matLayer) {
+    function updateMap(deathLayer, getColor, currentYear) {
+        deathLayer.eachLayer(function(layer) {
+            layer.setStyle({
+                fillColor: getColor(+layer.feature.properties['ave_death_' + currentYear])
+            })
+        });
+    }  // end updateMap()
+    function sequenceUI(matLayer, deathLayer) {
         // sequenceUI function body
-
         // create Leaflet control for the slider
         var sliderControl = L.control({
             position: 'bottomleft'
         });
-
         sliderControl.onAdd = function (map) {
-
             var controls = L.DomUtil.get("slider");
-
             L.DomEvent.disableScrollPropagation(controls);
             L.DomEvent.disableClickPropagation(controls);
-
             return controls;
-
         }
-
         // add it to the map
         sliderControl.addTo(map);
-
         //select the slider's input and listen for change
         $('#slider input[type=range]')
             .on('input', function () {
-
             // current value of slider is current year
             var currentYear = this.value;
-
             // resize the circles with updated year
             resizeCircles(matLayer, currentYear);
+            // recolor county polygons with updated year
+            updateMap(deathLayer, getColor, currentYear);
       
             });
-
     }
 /*
     function drawLegend(data) {
         // drawLegend body
-
         // create Leaflet control for the legend
         var legendControl = L.control({
             position: 'bottomright'
        }); 
-
         // when the control is added to the map
         legendControl.onAdd = function (map) {
-
         // select the legend using id attribute of legend
         var legend = L.DomUtil.get("legend");
-
             // disable scroll and click functionality 
             L.DomEvent.disableScrollPropagation(legend);
             L.DomEvent.disableClickPropagation(legend);
-
         // return the selection
         return legend;
-
         }
-
         legendControl.addTo(map);
-
         // loop through all features 
         var dataValues = data.features.map(function (mat) {
             // for each year in a county
@@ -293,7 +282,6 @@
         var sortedValues = dataValues.sort(function(a,b) {
             return b - a;
         });
-
         // round the highest number and use as our large circle diameter
         var maxValue = Math.round(sortedValues[0] / 1000) * 1000;
     
@@ -303,7 +291,6 @@
     
         // select our circles container and set the height
         $(".legend-circles").css('height', largeDiameter.toFixed());
-
         // set width and height for large circle
         $('.legend-large').css({
             'width': largeDiameter.toFixed(),
@@ -316,64 +303,52 @@
             'top': largeDiameter - smallDiameter,
             'left': smallDiameter / 2
         })
-
         // label the max and median value
         $(".legend-large-label").html(maxValue.toLocaleString());
         $(".legend-small-label").html((maxValue / 2).toLocaleString());
-
         // adjust the position of the large based on size of circle
         $(".legend-large-label").css({
         'top': -11,
         'left': largeDiameter + 30,
         });
-
         // adjust the position of the large based on size of circle
         $(".legend-small-label").css({
             'top': smallDiameter - 11,
             'left': largeDiameter + 30
         });
-
         // insert a couple hr elements and use to connect value label to top of each circle
         $("<hr class='large'>").insertBefore(".legend-large-label")
         $("<hr class='small'>").insertBefore(".legend-small-label").css('top', largeDiameter - smallDiameter - 8);
   
     }
 */
-
     function retrieveInfo(matLayer, currentYear) {
         //function body
     
         // select the element and reference with variable
         // and hide it from view initially
         var info = $('#info').hide();
-
         // since the matLayer is on top, use to detect mouseover events
         matLayer.on('mouseover', function (e) {
             
             // access properties = e.layer.feature.properties;
             var props = e.layer.feature.properties;
-
           if(+e.layer.feature.properties['smat_' + currentYear] == 0) {
                 // hide the tooltip
                 info.hide();
                 
           // otherwise show the tooltip
           } else {
-
             //remove the none class to display and show
             info.show();
-
-
             // populate HTML elements with relevant info
             $('#info span').html(props.county);
             $(".mat span:first-child").html('(year ' + currentYear + ')');
             $(".mat span:last-child").html(Number(props['smat_' + currentYear]).toLocaleString());
-
             // raise opacity level as visual affordance
             e.layer.setStyle({
             fillOpacity: .6
             });
-
             // empty arrays for death values
             var deathValues = [];
       
@@ -381,12 +356,11 @@
             for (var i = 2004; i <= 2016; i++) {
                 deathValues.push(props['ave_death_' + i]);
             }
-
             $('.deathspark').sparkline(deathValues, {
                 width: '200px',
                 height: '30px',
                 lineColor: '#D96D02',
-                fillColor: '#d98939',
+                fillColor: '#bd0026',
                 spotRadius: 0,
                 lineWidth: 2
             });
@@ -395,16 +369,13 @@
     
         // hide the info panel when mousing off layergroup and remove affordance opacity
         matLayer.on('mouseout', function(e) {
-
             // hide the info panel
             info.hide();
-
             // reset the layer style
             e.layer.setStyle({
                 fillOpacity: 0
             });
         });
-
         // when the mouse moves on the document
         $(document).mousemove(function(e) {
             // first offset from the mouse position of the info window
@@ -412,7 +383,6 @@
                 "left": e.pageX + 6,
                 "top": e.pageY - info.height() - 25
             });
-
             // if it crashes into the top, flip it lower right
             if (info.offset().top < 4) {
                 info.css({
@@ -427,8 +397,6 @@
             }
         });
     }
-
-
     function addLabel (currentYear) {
         // create Leaflet control for the legend
         var labelControl = L.control({
@@ -451,14 +419,11 @@
         }
     
         labelControl.addTo(map);
-
         // access properties = e.layer.feature.properties;
-
         // populate HTML elements with relevant info
         $(".year span").html(currentYear);
  
     }
-
   </script>
 
 </body>
