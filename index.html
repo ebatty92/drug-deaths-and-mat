@@ -80,12 +80,6 @@
   <!-- legend -->
   <div id='legend' class='bg-gray-faint round px12 py12 relative'>
     <h3 class='txt-bold txt-h4 mb12 w180'>Estimated Death Rates by county</h3>
-    <div class='legend-circles relative w180'>
-      <div class="legend-large border border--gray-light absolute"></div>
-      <div class="legend-small border border--gray-light absolute"></div>
-      <div class="legend-large-label txt-m absolute"></div>
-      <div class="legend-small-label txt-m absolute"></div>
-    </div>
   </div>
 
   <!-- ui info panel -->
@@ -241,7 +235,7 @@
       
             });
     }
-    function drawLegend(deathLayer, getColor) {
+    function drawLegend(getColor) {
         // drawLegend body
         // create Leaflet control for the legend
         var legendControl = L.control({
