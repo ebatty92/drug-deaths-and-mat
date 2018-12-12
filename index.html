@@ -34,6 +34,21 @@
     body {
         font-family: "Work Sans", sans-serif;
     }  
+    .input-color {
+        position: relative;
+    }
+    .input-color input {
+        padding-left: 20px;
+    }
+    .input-color .color-box {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        background-color: #ccc;
+        position: absolute;
+        left: 5px;
+        top: 5px;
+    }
   </style>
 </head>
 
@@ -79,7 +94,32 @@
 
   <!-- legend -->
   <div id='legend' class='bg-gray-faint round px12 py12 relative'>
-    <h3 class='txt-bold txt-h4 mb12 w180'>Estimated Death Rates by county</h3>
+        <h3 class='txt-bold txt-h5 mb12 w180'>Estimated <span style="color: #bd0026">Death Rate</span> by County</h3>
+        <div class="input-color bg-gray-faint">
+            <input type="txt-h4 mb12 w180" value="0 - 6.94" />
+                <div class="color-box" style="background-color: #ffe798;">
+                </div>
+        </div>
+        <div class="input-color bg-gray-faint">
+            <input type="txt-h4 mb12 w180" value="6.95 - 10.94" />
+                <div class="color-box" style="background-color: #fecc5c;">
+                </div>
+        </div>
+        <div class="input-color bg-gray-faint">
+            <input type="txt-h4 mb12 w180" value="10.95 - 16.94" />
+                <div class="color-box" style="background-color: #fd8d3c;">
+                </div>
+        </div>
+        <div class="input-color bg-gray-faint">
+            <input type="txt-h4 mb12 w180" value="16.95 - 22.94" />
+                <div class="color-box" style="background-color: #f03b20;">
+                </div>
+        </div>
+        <div class="input-color bg-gray-faint">
+            <input type="txt-h4 mb12 w180" value="22.95+" />
+                <div class="color-box" style="background-color: #bd0026;">
+                </div>
+      </div>    
   </div>
 
   <!-- ui info panel -->
@@ -235,7 +275,7 @@
       
             });
     }
-    function drawLegend(getColor) {
+    function drawLegend(data) {
         // drawLegend body
         // create Leaflet control for the legend
         var legendControl = L.control({
@@ -248,19 +288,10 @@
                 // disable scroll and click functionality 
                 L.DomEvent.disableScrollPropagation(legend);
                 L.DomEvent.disableClickPropagation(legend);
-            
-                classes = [0, 6.95, 10.95, 16.95, 22.95],
-                labels = [];
-                // loop through intervals and generate a label with a colored square
-                for (var i = 0; i < classes.length; i++) {
-                    legend.innerHTML +=
-                        '<i style="background:' + getColor(classes[i] + 1) + '"></i> ' +
-                        classes[i] + (classes[i+ 1] ? '&ndash;' + classes[i+1] + '<br>' : '+');
-            } 
             // return the selection
             return legend;
         };
-        legendControl.addTo(map);  
+        legendControl.addTo(map);
     }
     function retrieveInfo(matLayer, currentYear) {
         //function body
