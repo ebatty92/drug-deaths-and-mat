@@ -136,17 +136,11 @@
         console.log(e.error[0].message);
     });
     function getColor(val) {
-        if (val <= 6.94) {
-            return '#ffe798';
-        } else if (val >= 6.95 &&  val < 10.95) {
-            return '#fecc5c';
-        } else if (val >= 10.95 && val < 16.95) {
-            return '#fd8d3c';
-        } else if (val >= 16.95 && val < 22.95) {
-            return '#f03b20';
-        } else if (val >= 22.95) {
-            return '#bd0026';
-        }
+        return val > 22.95 ? '#bd0026' :
+               val > 16.95 ? '#f03b20' :
+               val > 10.95 ? '#fd8d3c' :
+               val > 6.95  ? '#fecc5c' :
+                             '#ffe798';
     }
     function drawMap(data, poly){
         // access to data here
