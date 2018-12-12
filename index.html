@@ -252,20 +252,28 @@
         // create Leaflet control for the legend
         var legendControl = L.control({
             position: 'bottomright'
-       }); 
+        }); 
         // when the control is added to the map
         legendControl.onAdd = function (map) {
-        // select the legend using id attribute of legend
-        var legend = L.DomUtil.get("legend");
-            // disable scroll and click functionality 
-            L.DomEvent.disableScrollPropagation(legend);
-            L.DomEvent.disableClickPropagation(legend);
-        // return the selection
-        return legend;
-        }
+            // select the legend using id attribute of legend
+            var legend = L.DomUtil.get("legend");
+                // disable scroll and click functionality 
+                L.DomEvent.disableScrollPropagation(legend);
+                L.DomEvent.disableClickPropagation(legend);
+            
+                classes = [0, 6.95, 10.95, 16.95, 22.95],
+                labels = [];
+                // loop through intervals and generate a label with a colored square
+                for (var i = 0; i < classes.length; i++) {
+                    legend.innerHTML +=
+                        '<i style="background:' + getColor(classes[i] + 1) + '"></i> ' +
+                        classes[i] + (classes[i+ 1] ? '&ndash;' + classes[i+1] + '<br>' : '+');
+            } 
+            // return the selection
+            return legend;
+        };
         legendControl.addTo(map);  
     }
-
     function retrieveInfo(matLayer, currentYear) {
         //function body
     
