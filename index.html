@@ -40,21 +40,21 @@
 <body>
   <div class='flex-parent viewport-full relative scroll-hidden'>
     <div class='flex-child w-full w300-ml absolute static-ml left bottom'>
-      <div class='flex-parent flex-parent--column viewport-third h-full-ml hmax-full bg-orange-faint py18 px12'>
-        <div class='flex-child flex-child--grow px12 py12 bg-orange-faint scroll-auto'>
-          <h1 class='txt-h2 color-green-light mb6'>Title</h1>
+      <div class='flex-parent flex-parent--column viewport-third h-full-ml hmax-full bg-gray-light py18 px12'>
+        <div class='flex-child flex-child--grow px12 py12 bg-gray-faint scroll-auto'>
+          <h1 class='txt-h2 color-black mb6'>Title</h1>
           <p class='txt-bold'>Content:
             <li class='txt-bold'>Content</li>
             <li class='txt-bold'>Content</li>
           </p>
         </div>
-        <footer class='px12 py12 bg-green-faint txt-s'>
+        <footer class='px12 py12 bg-gray txt-s'>
           <ul>
-            <li class='txt-m'>Explore the raw
-              <a class='link color-orange' target="_blank" href='https://www.opendata.go.ke/datasets/national-boys-and-girls-enrollments-per-class-for-primary-school-education?selectedAttribute=Year'>Data</a>
+            <li class='txt-m color-white'>Explore the raw
+              <a class='link color-red-light txt-bold' target="_blank" href='https://www.opendata.go.ke/datasets/national-boys-and-girls-enrollments-per-class-for-primary-school-education?selectedAttribute=Year'>Data</a>
             </li>
-            <li class='txt-m'>Map authored by
-              <a class='link color-orange' target="_blank" href='https://ebatty92.github.io/'>Evan Batty</a>
+            <li class='txt-m color-white'>Map authored by
+              <a class='link color-red-light txt-bold' target="_blank" href='https://ebatty92.github.io/'>Evan Batty</a>
             </li>
           </ul>
         </footer>
@@ -66,20 +66,20 @@
   </div>
 
   <!-- grade level display -->
-  <div id='label' class='py6 px12 bg-green-faint border border--gray-light round relative'>
+  <div id='label' class='py6 px12 bg-gray-faint border border--gray-light round relative'>
     <p class='grade txt-bold txt-h4'>Year:
       <span></span>
     </p>
   </div>
 
   <!-- ui slider -->
-  <div id='slider' class='range w240 bg-green-faint round-ml px12'>
+  <div id='slider' class='range w240 bg-gray-faint round-ml px12'>
     <input type='range' min="2004" , max="2016" , value="2004" , step="1" />
   </div>
 
   <!-- legend -->
-  <div id='legend' class='bg-green-faint round px12 py12 relative'>
-    <h3 class='txt-bold txt-h4 mb12 w180'>Number of MAT facilities by county</h3>
+  <div id='legend' class='bg-gray-faint round px12 py12 relative'>
+    <h3 class='txt-bold txt-h4 mb12 w180'>Estimated Death Rates by county</h3>
     <div class='legend-circles relative w180'>
       <div class="legend-large border border--gray-light absolute"></div>
       <div class="legend-small border border--gray-light absolute"></div>
@@ -129,6 +129,7 @@
         // access to the GeoJSON here!
             $.getJSON("data/final_data.json", function(poly){
                 drawMap(e.target.toGeoJSON(),poly); // draw the map using GeoJSON data
+                drawLegend(e.target.toGeoJSON());
             });
         })
         .on('error', function (e) {
@@ -180,7 +181,7 @@
         
         updateMap(deathLayer, getColor, 2004);
         resizeCircles(matLayer, 2004);
-        sequenceUI(matLayer);
+        sequenceUI(matLayer, deathLayer);
         addLabel(currentYear);
     } /// end drawMap()
     function calcRadius(val) {
@@ -246,8 +247,7 @@
       
             });
     }
-/*
-    function drawLegend(data) {
+    function drawLegend(deathLayer, getColor) {
         // drawLegend body
         // create Leaflet control for the legend
         var legendControl = L.control({
@@ -263,65 +263,9 @@
         // return the selection
         return legend;
         }
-        legendControl.addTo(map);
-        // loop through all features 
-        var dataValues = data.features.map(function (mat) {
-            // for each year in a county
-            for (var year in county.properties) {
-                // shorthand to each value
-                var value = county.properties[smat];
-                // if the value can be converted to a number
-                    if (+value) {
-                    // return the value to the array
-                    return +value;
-                }
-            }
-        });
-   
-        // sort our array
-        var sortedValues = dataValues.sort(function(a,b) {
-            return b - a;
-        });
-        // round the highest number and use as our large circle diameter
-        var maxValue = Math.round(sortedValues[0] / 1000) * 1000;
-    
-        // calc diameters
-        var largeDiameter = calcRadius(maxValue) * 2,
-            smallDiameter = largeDiameter / 2;
-    
-        // select our circles container and set the height
-        $(".legend-circles").css('height', largeDiameter.toFixed());
-        // set width and height for large circle
-        $('.legend-large').css({
-            'width': largeDiameter.toFixed(),
-            'height': largeDiameter.toFixed(),
-        })
-        // set width and height for small circle position
-        $('.legend-small').css({
-            'width': smallDiameter.toFixed(),
-            'height': smallDiameter.toFixed(),
-            'top': largeDiameter - smallDiameter,
-            'left': smallDiameter / 2
-        })
-        // label the max and median value
-        $(".legend-large-label").html(maxValue.toLocaleString());
-        $(".legend-small-label").html((maxValue / 2).toLocaleString());
-        // adjust the position of the large based on size of circle
-        $(".legend-large-label").css({
-        'top': -11,
-        'left': largeDiameter + 30,
-        });
-        // adjust the position of the large based on size of circle
-        $(".legend-small-label").css({
-            'top': smallDiameter - 11,
-            'left': largeDiameter + 30
-        });
-        // insert a couple hr elements and use to connect value label to top of each circle
-        $("<hr class='large'>").insertBefore(".legend-large-label")
-        $("<hr class='small'>").insertBefore(".legend-small-label").css('top', largeDiameter - smallDiameter - 8);
-  
+        legendControl.addTo(map);  
     }
-*/
+
     function retrieveInfo(matLayer, currentYear) {
         //function body
     
