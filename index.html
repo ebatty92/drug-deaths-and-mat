@@ -277,7 +277,7 @@
         // sequenceUI function body
         // create Leaflet control for the slider
         var sliderControl = L.control({
-            position: 'bottomleft'
+            position: 'bottomright'
         });
         sliderControl.onAdd = function (map) {
             var controls = L.DomUtil.get("slider");
@@ -395,7 +395,7 @@
     function addLabel (deathLayer, currentYear) {
         // create Leaflet control for the legend
         var labelControl = L.control({
-          position: 'bottomleft'
+          position: 'bottomright'
         });
     
         // when the control is added to the map
