@@ -3,11 +3,11 @@
 
 <head>
   <meta charset=utf-8 />
-  <title>Title</title>
+  <title>Emergence of MAT</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <link href='https://api.mapbox.com/mapbox-assembly/v0.21.2/assembly.min.css' rel='stylesheet'>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
   <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,500,600' rel='stylesheet' type='text/css'>
   <style>
     /* display none for layout but be careful of license restrictions */
@@ -25,8 +25,23 @@
         border: 1px dashed #ccc; /* overwrite assembly.css rule */
         margin-top: 8px; /* overwrite assembly.css rule */
     }
+    hr {
+        border: none;
+        border-top: 3px double rgb(0, 0, 0);
+        color: rgb(0, 0, 0);
+        overflow: visible;
+        text-align: center;
+        height: 5px;
+    }
+
+    hr:after {
+        background: #fff;
+        padding: 2 4px;
+        position: relative;
+        top: -13px;
+    }
     .mat {
-        color: rgb(86, 218, 53);
+        color: rgb(50, 187, 221);
     }
     #info {     
         z-index: 1000; 
@@ -58,26 +73,26 @@
       <div class='flex-parent flex-parent--column viewport-third h-full-ml hmax-full bg-gray-light py18 px12'>
         <div class='flex-child flex-child--grow px12 py12 bg-gray-faint scroll-auto'>
           <h1 class='txt-h3 txt-bold color-black mb6'>Emergence of MAT in Kentucky, Ohio, and West Virginia, 2004-2016 </h1>
-          <div class='flex-child flex-child--grow px12 py12 bg-gray'></div>
+          <hr>
           <h2 class='txt-h4 color-black txt-bold'>Background:
-            <p class='txt-h5 color-gray-dark'>Although scientific literature has pointed out the benefits of medication assisted treatment (MAT) 
+            <p class='txt-h5 color-gray-dark txt-light'>Although scientific literature has pointed out the benefits of medication assisted treatment (MAT) 
                 in the treatment of persons with substance use disorders (PWSUD), cultural, moral, and resource barriers have led to slower uptake and, 
                 overall, low numbers of MAT facilities, especially in rural communities.
             </p>
-            <p class='txt-h5 color-gray-dark'>This map visualizes the temporal trends in estimated drug-related death rates in concurrence with the 
+            <p class='txt-h5 color-gray-dark txt-light'>This map visualizes the temporal trends in estimated drug-related death rates in concurrence with the 
                 emergence of medication assisted treatment (MAT) facilities across counties in three states with populations significantly affected
                 by the current opioid crisis: Kentucky, Ohio, and West Virginia.
 
             </p>
           </h2>
           <h2 class='txt-h4 color-black txt-bold'>Functionality:
-            <li class='txt-h5 txt-bold color-gray-dark'>Hovering over the circular symbology for MAT facilities provides the county name, number of facilities in that county, and the overall trend of estimated death rates from 2004-2016.</li>            
-            <li class='txt-h5 txt-bold color-gray-dark'>The slider located at the bottom-left of the map changes the data visualization to, simultaneously, represent estimated death rates and MAT facilities from 2004-2016.</li>
+            <li class='txt-h5 txt-bold color-gray-dark txt-light'>Hovering over the circular symbology for MAT facilities provides the county name, number of facilities in that county, and the overall trend of estimated death rates from 2004-2016.</li>            
+            <li class='txt-h5 txt-bold color-gray-dark txt-light'>The slider located at the bottom-left of the map changes the data visualization to, simultaneously, represent estimated death rates and MAT facilities from 2004-2016.</li>
           </h2>
           <h2 class='txt-h4 color-black txt-bold'>Methodology:
-            <li class='txt-h5 color-gray-dark'>Drug-related death rate estimates were derived as means of estimated ranges, assumed to be symmetrical, from the original dataset.</li>
-            <li class='txt-h5 color-gray-dark'>Choropleth data classification uses natural breaks derived to best group similar values.</li>
-            <li class='txt-h5 color-gray-dark'>Circular Symbols represent the raw number of MAT facilities in each county.</li>
+            <li class='txt-h5 color-gray-dark txt-light'>Drug-related death rate estimates were derived as means of estimated ranges, assumed to be symmetrical, from the original dataset.</li>
+            <li class='txt-h5 color-gray-dark txt-light'>Choropleth data classification uses natural breaks derived to best group similar values.</li>
+            <li class='txt-h5 color-gray-dark txt-light'>Circular Symbols represent the raw number of MAT facilities in each county.</li>
           </h2>
         </div>
         <footer class='px12 py12 bg-gray txt-s'>
@@ -99,7 +114,7 @@
 
   <!-- grade level display -->
   <div id='label' class='bg-gray-faint border border--gray-light round'>
-    <p class='grade txt-bold txt-h3'>2004 - 2016:
+    <p class='grade txt-bold txt-h3'>2004 - 2016
       <span></span>
     </p>
   </div>
@@ -113,34 +128,34 @@
   <div id='legend' class='bg-gray-faint round px6 py12 relative'>
         <h3 class='txt-bold txt-h5 mb12 w120'>Estimated Drug-Related <span style="color: #bd0026">Death Rate</span> by County</h3>
         <div class="input-color bg-gray-faint">
-            <input type="txt-h4 mb12 w180" value="0 - 6.94" />
+            <input type="txt-h4 mb12 w180" value="0% - 6%" />
                 <div class="color-box" style="background-color: #ffe798;">
                 </div>
         </div>
         <div class="input-color bg-gray-faint">
-            <input type="txt-h4 mb12 w180" value="6.95 - 10.94" />
+            <input type="txt-h4 mb12 w180" value="7% - 10%" />
                 <div class="color-box" style="background-color: #fecc5c;">
                 </div>
         </div>
         <div class="input-color bg-gray-faint">
-            <input type="txt-h4 mb12 w180" value="10.95 - 16.94" />
+            <input type="txt-h4 mb12 w180" value="11% - 16%" />
                 <div class="color-box" style="background-color: #fd8d3c;">
                 </div>
         </div>
         <div class="input-color bg-gray-faint">
-            <input type="txt-h4 mb12 w180" value="16.95 - 22.94" />
+            <input type="txt-h4 mb12 w180" value="17% - 22%" />
                 <div class="color-box" style="background-color: #f03b20;">
                 </div>
         </div>
         <div class="input-color bg-gray-faint">
-            <input type="txt-h4 mb12 w180" value="22.95+" />
+            <input type="txt-h4 mb12 w180" value="23%+" />
                 <div class="color-box" style="background-color: #bd0026;">
                 </div>
       </div> 
       <div>
-            <p class='pt12 txt-bold txt-h5 mb12 w180'>Number of <span style="color: rgb(86, 218, 53)">MAT Facilities</span></p>
+            <p class='pt12 txt-bold txt-h5 mb12 w180'>Number of <span style="color: rgb(50, 187, 221)">MAT Facilities</span></p>
             <svg height="70" width="100">
-                <circle cx="50" cy="35" r="32" stroke="rgb(86, 218, 53)" stroke-width="3" fill="#F7F7F7" />
+                <circle cx="50" cy="35" r="32" stroke="rgb(50, 187, 221)" stroke-width="3" fill="#F7F7F7" />
             </svg>
         </div>
    
@@ -160,13 +175,11 @@
     <p class='my6'><span class='deathspark'></span></p>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.21.2/assembly.js"></script>
-  <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
   <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.3.5/chroma.min.js"></script>
 
   <script>
     var map = L.map('map', {
@@ -225,7 +238,7 @@
         // create 1 separate layer from GeoJSON data
         var matLayer = L.geoJson(data, options).addTo(map);
         matLayer.setStyle({
-            color: '#59EA35',
+            color: 'rgb(50, 187, 221)',
         });
 		map.fitBounds(matLayer.getBounds(), {
             zoom: 3
