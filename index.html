@@ -201,7 +201,7 @@
         // access to the GeoJSON here!
             $.getJSON("data/ky_wv_oh_state_poly.json", function(state){
                 $.getJSON("data/final_data.json", function(county){
-                    drawMap(e.target.toGeoJSON(),county); // draw the map using GeoJSON data
+                    drawMap(e.target.toGeoJSON(),county, state); // draw the map using GeoJSON data
                     drawLegend(e.target.toGeoJSON());
                 });
             });
@@ -233,8 +233,8 @@
             style: function (feature) {
                 return {
                     stroke: true,
-                    color: '#A29F9F',
-                    weight: 1,
+                    color: '#ECE7E7',
+                    weight: 2,
                     opacity: 1,
                     fillOpacity: 0
                 };
