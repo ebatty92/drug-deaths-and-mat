@@ -199,9 +199,11 @@
     omnivore.csv('data/county_mat.csv')
         .on('ready', function (e) {
         // access to the GeoJSON here!
-            $.getJSON("data/final_data.json", function(poly){
-                drawMap(e.target.toGeoJSON(),poly); // draw the map using GeoJSON data
-                drawLegend(e.target.toGeoJSON());
+            $.getJSON("data/ky_wv_oh_state_poly.json", function(state){
+                $.getJSON("data/final_data.json", function(county){
+                    drawMap(e.target.toGeoJSON(),county); // draw the map using GeoJSON data
+                    drawLegend(e.target.toGeoJSON());
+                });
             });
         })
         .on('error', function (e) {
@@ -214,10 +216,10 @@
                val > 6.95  ? '#fecc5c' :
                              '#ffe798';
     }
-    function drawMap(data, poly){
+    function drawMap(data, county, state){
         // access to data here
         var currentYear = 2004
-        var deathLayer = L.geoJSON(poly, {
+        var deathLayer = L.geoJSON(county, {
             style: function (feature) {
                 return {
                     color: 'black',
@@ -227,12 +229,23 @@
                 };
             }
         }).addTo(map);
+        var stateLayer = L.geoJSON(state, {
+            style: function (feature) {
+                return {
+                    stroke: true,
+                    color: '#A29F9F',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0
+                };
+            }
+        }).addTo(map);
         var options = {
             pointToLayer: function (feature, ll) {
                 return L.circleMarker(ll, {
                     opacity: 1,
                     weight: 3,
-                    fillOpacity: 0,
+                    fillOpacity: 0
                 })
             }
         }
