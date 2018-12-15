@@ -342,12 +342,7 @@
             
             // access properties = e.layer.feature.properties;
             var props = e.layer.feature.properties;
-          if(+e.layer.feature.properties['smat_' + currentYear] == 0) {
-                // hide the tooltip
-                info.hide();
-                
-          // otherwise show the tooltip
-          } else {
+
             //remove the none class to display and show
             info.show();
             // populate HTML elements with relevant info
@@ -373,7 +368,7 @@
                 spotRadius: 0,
                 lineWidth: 2
             });
-          }
+          
         });
     
         // hide the info panel when mousing off layergroup and remove affordance opacity
