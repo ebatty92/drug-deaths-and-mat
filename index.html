@@ -113,9 +113,9 @@
     </div>
   </div>
 
-  <!-- grade level display -->
+  <!-- year display -->
   <div id='label' class='bg-gray-faint border border--gray-light round'>
-    <p class='grade txt-bold txt-h3'>2004 - 2016
+    <p class='year txt-bold txt-h3'>Year:
       <span></span>
     </p>
   </div>
@@ -401,7 +401,7 @@
             }
         });
     }
-    function addLabel (deathLayer, currentYear) {
+    function addLabel (currentYear) {
         // create Leaflet control for the legend
         var labelControl = L.control({
           position: 'bottomright'
@@ -424,6 +424,9 @@
     
         labelControl.addTo(map);
         // access properties = e.layer.feature.properties;
+        // populate HTML elements with relevant info
+        $(".year span").html(currentYear);
+
     }
   </script>
 
